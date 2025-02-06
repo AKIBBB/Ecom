@@ -22,6 +22,11 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
     "https://ecom-jfvh.onrender.com"
 ]
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5500",  
+    "https://ecom-jfvh.onrender.com", 
+]
+
 
 # Application definition
 
@@ -49,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'Ecom.urls'
 

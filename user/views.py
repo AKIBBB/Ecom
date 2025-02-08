@@ -37,7 +37,7 @@ class UserRegistrationApiView(APIView):
             # Generate email confirmation token
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            confirm_link = f"https://ecom-jfvh.onrender.com/user/activate/{uid}/{token}"
+            confirm_link = f"https://ecom-jfvh.onrender.com/user/activate/{uid}/{token}/"
 
             # Send email
             email_subject = "Confirm Your Email"
@@ -79,6 +79,7 @@ class UserLoginApiView(APIView):
             if user:
                 token, created = Token.objects.get_or_create(user=user)
                 user_data = UserSerializer(user).data
+                user_data['is_superuser'] = user.is_superuser
                 
                 return Response({
                     "token": token.key,

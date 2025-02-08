@@ -37,7 +37,7 @@ class UserRegistrationApiView(APIView):
             # Generate email confirmation token
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            confirm_link = f"https://ecom-jfvh.onrender.com/user/activate/{uid}/{token}/"
+            confirm_link = f"https://ecom-jfvh.onrender.com/user/active/{uid}/{token}/"
 
             # Send email
             email_subject = "Confirm Your Email"
@@ -94,10 +94,11 @@ class UserLoginApiView(APIView):
     
     
 class UserLogoutView(APIView):
-    def get(self,request):
-        request.user.auth_token.delete()
-        logout(request)
-        return redirect ('login')
+    def get(self, request):
+        if request.user.is_authenticated:
+            request.user.auth_token.delete()  
+        logout(request)  
+        return redirect('login')
     
     
 class UserProfileView(RetrieveAPIView):

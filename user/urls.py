@@ -8,5 +8,6 @@ urlpatterns = [
     path('active/<uid64>/<token>/', views.activate ,name='active'),
     path('login/', views.UserLoginApiView.as_view(),name='login'),
     path('logout/', views.UserLogoutView.as_view(),name='logout'),
+    path('profile/',views.UserProfileView.as_view(),name='profile'),
     
 ]

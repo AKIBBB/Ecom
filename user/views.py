@@ -3,6 +3,7 @@ from rest_framework import viewsets
 from .import models
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
 from . import serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,6 +12,7 @@ from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes,force_str
 from rest_framework import status
 from .models import UserProfile
+from django.contrib.auth import logout
 from .serializers import UserLoginSerializer, UserSerializer
 from rest_framework.generics import RetrieveAPIView
 
@@ -91,15 +93,19 @@ class UserLoginApiView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
-    
+
+
+
 class UserLogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        if request.user.is_authenticated:
-            request.user.auth_token.delete()  
-        logout(request)  
+
+        logout(request)
         return redirect('login')
+
     
+
     
 class UserProfileView(RetrieveAPIView):
     serializer_class = UserSerializer

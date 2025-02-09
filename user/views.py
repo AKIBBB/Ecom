@@ -98,11 +98,14 @@ class UserLoginApiView(APIView):
 
 class UserLogoutView(APIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
-    def get(self, request):
-
-        logout(request)
-        return redirect('login')
+    def post(self, request):
+        if not request.auth:
+            raise AuthenticationFailed("Authentication token not provided or invalid.")
+        request.auth.delete()
+        return Response({"message": "Logged out successfully"}, status=200)
+    
 
     
 

@@ -15,8 +15,8 @@ from .models import UserProfile
 from django.contrib.auth import logout
 from .serializers import UserLoginSerializer, UserSerializer
 from rest_framework.generics import RetrieveAPIView
-
-
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.exceptions import AuthenticationFailed
 #for sending email
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string

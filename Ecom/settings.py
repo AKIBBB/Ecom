@@ -27,6 +27,12 @@ CORS_ALLOWED_ORIGINS = [
     "https://ecom-jfvh.onrender.com", 
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
 
 # Application definition
 

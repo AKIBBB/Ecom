@@ -30,7 +30,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     username=serializers.CharField(required=True)
     password=serializers.CharField(required=True)
-    
+
+class LogoutSerializer(serializers.Serializer):
+    token = serializers.CharField(required=False)
+
+    def validate(self, attrs):
+        return attrs
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile

@@ -32,10 +32,8 @@ class UserLoginSerializer(serializers.Serializer):
     password=serializers.CharField(required=True)
 
 class LogoutSerializer(serializers.Serializer):
-    token = serializers.CharField(required=False)
-
-    def validate(self, attrs):
-        return attrs
+    username = serializers.CharField(required=True)
+    password =serializers.CharField(required=True, write_only=True)
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

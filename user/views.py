@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
 from . import serializers
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.tokens import default_token_generator
@@ -13,7 +14,7 @@ from django.utils.encoding import force_bytes,force_str
 from rest_framework import status
 from .models import UserProfile
 from django.contrib.auth import logout
-from .serializers import UserLoginSerializer, UserSerializer
+from .serializers import UserLoginSerializer, UserSerializer,LogoutSerializer
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
@@ -97,16 +98,29 @@ class UserLoginApiView(APIView):
 
 
 class UserLogoutView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowAny]  # Allow logout without authentication
 
     def post(self, request):
-        try:
-            # Delete the token from the database
-            request.user.auth_token.delete()
-            return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"message": "Logged out successfully"}, status=200)
+        serializer = LogoutSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data["username"]
+            password = serializer.validated_data["password"]
+
+            # Authenticate the user
+            user = authenticate(username=username, password=password)
+            if user is None:
+                return Response({"message": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Delete the token if it exists
+            token = Token.objects.filter(user=user).first()
+            if token:
+                token.delete()
+                return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "User is already logged out"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 
     

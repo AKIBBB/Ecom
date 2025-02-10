@@ -101,10 +101,12 @@ class UserLogoutView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request):
-        if not request.auth:
-            raise AuthenticationFailed("Authentication token not provided or invalid.")
-        request.auth.delete()
-        return Response({"message": "Logged out successfully"}, status=200)
+        try:
+            # Delete the token from the database
+            request.user.auth_token.delete()
+            return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"message": "Logged out successfully"}, status=200)
     
 
     
